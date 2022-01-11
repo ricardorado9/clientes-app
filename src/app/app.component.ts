@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Vienvenido ha Angular';
-  curso: string ='Spring 5 con Angular 7- cigue para ber el bideo diesi hocho ';
+  curso: string = 'Spring 5 con Angular 7- cigue para ber el bideo diesi hocho ';
 }

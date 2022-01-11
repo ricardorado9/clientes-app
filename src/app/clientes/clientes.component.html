@@ -6,38 +6,40 @@
     <h6 class="card-subtitle mb-2 text-muted">Listado de Clientes </h6>
 
     <div class="my-2 text-left">
-      <button class="btn btn-rounded btn-primary" type="button" [routerLink]="['/clientes/form']">Crear Cliente</button>
+      <button *ngIf="authService.hasRole('ROLE_ADMIN')" class="btn btn-rounded btn-primary" type="button" [routerLink]="['/clientes/form']">Crear Cliente</button>
 
     </div>
-    <div *ngIf="clientes.length==0" class="alert alert-info">
+    <div *ngIf="clientes?.length==0" class="alert alert-info">
       No hay registros en la base de datos.
     </div>
-    <table class="table table-bordered table-stripped" *ngIf="clientes.length>0">
+    <table class="table table-bordered table-stripped" *ngIf="clientes?.length>0">
       <thead>
         <tr>
-          <th>#</th>
+          <th *ngIf="authService.hasRole('ROLE_USER')">#</th>
           <th>nombre</th>
           <th>apellido</th>
           <th>email</th>
           <th>fecha</th>
+          <th *ngIf="authService.hasRole('ROLE_ADMIN')">Crear Factura</th>
+          <th *ngIf="authService.hasRole('ROLE_ADMIN')">editar</th>
+          <th *ngIf="authService.hasRole('ROLE_ADMIN')">eliminar</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let cliente of clientes">
-          <td>
-            <img (click)="abrirModal(cliente)" *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{cliente.foto}}" alt="/{{cliente.foto}}"
-             class="img-thumbnail rounded" style="width:64px; cursor:pointer;">
+          <td *ngIf="authService.hasRole('ROLE_USER')">
+            <img (click)="abrirModal(cliente)" *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{cliente.foto}}" alt="/{{cliente.foto}}" class="img-thumbnail rounded" style="width:64px; cursor:pointer;">
 
-             <img (click)="abrirModal(cliente)" *ngIf="!cliente?.foto" src="http://localhost:8080/images/no-usuario.png" alt="Sin Foto"
-              class="img-thumbnail rounded" style="width:64px; cursor:pointer;">
+            <img (click)="abrirModal(cliente)" *ngIf="!cliente?.foto" src="http://localhost:8080/images/no-usuario.png" alt="Sin Foto" class="img-thumbnail rounded" style="width:64px; cursor:pointer;">
 
           </td>
           <td>{{ cliente.nombre }}</td>
           <td>{{ cliente.apellido | uppercase }}</td>
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.createdAt | date:"EEEE dd, MMMM yyyy" }}</td>
-          <td><button type="button" name="button" [routerLink]="['/clientes/form', cliente.id]" class="btn btn-primary">Editar</button></td>
-          <td><button type="button" name="button" (click)='delete(cliente)' class="btn btn-danger">Eliminar</button></td>
+          <td><button *ngIf="authService.hasRole('ROLE_ADMIN')" type="button" class="btn btn-success btn-sm" [routerLink]="['/facturas/form', cliente.id]">Nueva Factura</button></td>
+          <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button type="button" name="button" [routerLink]="['/clientes/form', cliente.id]" class="btn btn-primary">Editar</button></td>
+          <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button type="button" name="button" (click)='delete(cliente)' class="btn btn-danger">Eliminar</button></td>
         </tr>
       </tbody>
     </table>

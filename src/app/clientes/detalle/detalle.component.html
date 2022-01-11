@@ -15,33 +15,65 @@
                   <li class="list-group-item">{{cliente.nombre}}</li>
                   <li class="list-group-item">{{cliente.apellido}}</li>
                   <li class="list-group-item">{{cliente.email}}</li>
-                    <li class="list-group-item">{{cliente.region.nombre}}</li>
+                  <li class="list-group-item">{{cliente.region.nombre}}</li>
                   <li class="list-group-item">{{cliente.createdAt | date:"fullDate"}}</li>
                 </ul>
+                <div *ngIf="authService.hasRole('ROLE_ADMIN')">
+                  <div>
+                    <label for="formFileSm" class="form-label">Seleccionar foto</label>
+                    <input (change)="seleccionarFoto($event)" class="form-control form-control-sm" id="formFileSm" type="file">
+                  </div>
+                  <div class="input-group-append">
+                    <button [disabled]="!fotoSeleccionada" (click)="subirFoto()" type="button" class="btn btn-outline-secundary" name="Cargar">Subir</button>
 
-                <div>
-                  <label for="formFileSm" class="form-label">Seleccionar foto</label>
-                  <input (change)="seleccionarFoto($event)" class="form-control form-control-sm" id="formFileSm" type="file">
-                </div>
-                <div class="input-group-append">
-                  <button [disabled]="!fotoSeleccionada" (click)="subirFoto()" type="button" class="btn btn-outline-secundary" name="Cargar">Subir</button>
+                  </div>
 
-                </div>
-
-                <div *ngIf="progreso>0" class="progress" style="height:40px;">
-                  <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{width:progreso+'%'}" attr.aria-valuenow="{{progeso}}" aria-valuemin="0" aria-valuemax="100">
-                    {{progreso}}%
+                  <div *ngIf="progreso>0" class="progress" style="height:40px;">
+                    <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{width:progreso+'%'}" attr.aria-valuenow="{{progeso}}" aria-valuemin="0" aria-valuemax="100">
+                      {{progreso}}%
+                    </div>
                   </div>
                 </div>
+
+                <div class="col-sm">
+                  <img *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{cliente.foto}}" alt="/{{cliente.foto}}" class="img-thumbnail rounded">
+
+                </div>
               </div>
+              <div class="row">
+                <button type="button" class="btn btn-success btn-sm" [routerLink]="['/facturas/form', cliente.id]">Nueva Factura</button>
 
-              <div class="col-sm">
-                <img *ngIf="cliente?.foto" src="http://localhost:8080/api/uploads/img/{{cliente.foto}}" alt="/{{cliente.foto}}" class="img-thumbnail rounded">
+              </div>
+              <div class="row" *ngIf="authService.hasRole('ROLE_ADMIN')">
+                <div class="alert alert-info my-4" *ngIf="cliente.facturas.length==0">
 
+                  No hay facturas asignadas para el cliente {{cliente.nombre}} {{cliente.apellido}}
+                </div>
+
+                <table *ngIf="cliente.facturas.length > 0" class="table table-bordered table-striped my-4">
+                  <thead>
+                    <th>folio</th>
+                    <th>descripcion</th>
+                    <th>fecha</th>
+                    <th>total</th>
+                    <th>detalle</th>
+                    <th *ngIf="authService.hasRole('ROLE_ADMIN')">eliminar</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let factura of cliente.facturas">
+                      <td>{{factura.id}}</td>
+                      <td>{{factura.descripcion}}</td>
+                      <td>{{factura.createdAt}}</td>
+                      <td>{{factura.total}}</td>
+                      <td><button class="btn btn-primary btn-sm" type="button" [routerLink]="['/facturas',factura.id]">Ver</button></td>
+                      <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button class="btn btn-danger btn sm" type="button" (click)="delete(factura)">Eliminar</button></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
+          <div class=" modal-footer">
             <button (click)="cerrarModal()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
           </div>

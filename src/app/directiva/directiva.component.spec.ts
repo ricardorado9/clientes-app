@@ -8,9 +8,9 @@ describe('DirectivaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DirectivaComponent ]
+      declarations: [DirectivaComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -9,6 +9,6 @@ export class DirectivaComponent {
   habilitar: boolean = true;
   constructor() { }
 
- setHabilitar(): void {this.habilitar = !this.habilitar;}
+  setHabilitar(): void { this.habilitar = !this.habilitar; }
 
 }
